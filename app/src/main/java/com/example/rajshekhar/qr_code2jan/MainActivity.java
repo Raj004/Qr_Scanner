@@ -41,16 +41,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonScan;
     private TextView textViewName, textViewAddress;
 
-
-    //qr code scanner object
     private IntentIntegrator qrScan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //View objects
         buttonScan = (Button) findViewById(R.id.buttonScan);
         textViewName = (TextView) findViewById(R.id.textViewName);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
@@ -61,17 +57,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //attaching onclick listener
         buttonScan.setOnClickListener(this);
     }
-
-    //Getting the scan results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-            //if qrcode has nothing in it
             if (result.getContents() == null) {
                 Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
             } else {
-                //if qr contains data
                 try {
                     //converting the data to json
                     JSONObject obj = new JSONObject(result.getContents());
@@ -82,15 +74,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    //if control comes here
-                    //that means the encoded format not matches
-                    //in this case you can display whatever data is available on the qrcode
-                    //to a toast
-//                    String url =result.toString();
-//                    Intent i = new Intent(Intent.ACTION_VIEW);
-//                    i.setData(Uri.parse(url));
-//                    startActivity(i);
-
                     Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
                     if (InternetConnection.checkConnection(this)) {
                         // Its Available...
@@ -102,27 +85,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // Not Available...
                         Toast.makeText(this,"Internet Connection is Not available",Toast.LENGTH_LONG).show();
                     }
-
-
-
-
-
                 }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-    public boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            //You can replace it with your name
-            return !ipAddr.equals("");
 
-        } catch (Exception e) {
-            return false;
-        }
-    }
     @Override
     public void onClick(View view) {
         //initiating the qr code scan
